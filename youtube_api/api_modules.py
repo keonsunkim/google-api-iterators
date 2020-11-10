@@ -1,44 +1,51 @@
+# os import
 import os
 
+# standard library imports
 import json
-import requests
 
+# third party imports
+import requests
 import googleapiclient.discovery
 
-from validator_functions import validate_parameters
+# local imports
+from .validator_functions import validate_youtube_api_parameters
+from tools import dict_list_to_string
 
-class YoutubeAPIV3Base:
-
+class YoutubeAPIBase:
+    """
+    Base Youtube API class only made to be extended through inheritance.
+    """
     api_service_name = "youtube"
-    api_version = "v3"
 
-    def __init__(self, APIKey, *args, **kwargs):
 
-        os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+    def __init__(self, APIKey, version = 'v3', *args, **kwargs):
+
+        os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = '1'
         self._apikey = APIKey
         self.searchobject = googleapiclient.discovery.build(
                             self.api_service_name,
-                            self.api_version,
+                            version,
                             developerKey = self._apikey)
+        self.api_version = version
         self.return_data = None
 
     @classmethod
-    def _validate_parameters(cls, params):
+    def validate_parameters(cls, params):
         """
         A pre-checking function to validate whether parameters meet the
         requirements of Youtube V3 API
         Functions made in validator_functions module.
         """
-        validate_parameters(cls, params)
+        validate_youtube_api_parameters(cls, params)
 
-class YoutubeAPICommentRetriever(YoutubeAPIV3Base):
+class YoutubeAPICommentRetriever(YoutubeAPIBase):
     """
-
+    A class to make easy of youtube comment retrieval.
 
     Parameters are set from the rules given in the below website.
     "https://developers.google.com/youtube/v3/docs/commentThreads/
     list?apix_params=%7B%22part%22%3A%5B%22id%22%2C%22snippet%22%5D%7D"
-
     """
 
     required_parameters = {
@@ -70,10 +77,16 @@ class YoutubeAPICommentRetriever(YoutubeAPIV3Base):
 
 
     def search_with_params(self, params, *args, **kwargs):
+        """
+        Search function that accepts parameters. However parameters must be in
+        following syntax
+        { 'parameter name' : [values], ... }
+        """
         #validate parameters
-        self.validate_paramters(params)
-        """
-        Need to work here!
-        """
-        request = youtube.commentThreads().list()
+        self.validate_parameters(params)
+
+        request = self.searchobject.commentThreads().list(
+            **dict_list_to_string(params)
+        )
         response = request.execute()
+        print(response)

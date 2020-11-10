@@ -1,9 +1,9 @@
+#iter_class.base_iterator.py
 
 
 
-
-# import from tools directory
-from tools.time_tools import random_sleep
+# local import
+from tools import random_sleep
 
 
 

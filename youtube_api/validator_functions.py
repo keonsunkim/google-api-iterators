@@ -1,11 +1,11 @@
-
+# youtube_api.validator_functions.py
 
 """
 Validator functions kept here. I aim to keep all validating functions here so its
 easier to manage validators for different use cases.
 """
 
-def validate_parameters(api_module_instance, params):
+def validate_youtube_api_parameters(cls, params):
     """
     Parameter validator for a search functions.
     We assume that the Youtube API Class's required/filter/optional parameter rules
@@ -22,36 +22,65 @@ def validate_parameters(api_module_instance, params):
     value subset checks if there is no given value!
 
     Also, we assume that parameters passed to the search function, and finally to
-    this validator will look like below.
+    this validator will look like below. The params argument only accept the following
+    form.
 
-    { 'parameter name' : [values]}
+    { 'parameter name' : [values] }
 
     """
-    required_params_num = len(api_module_instance.required_parameters)
+    required_params_num = len(cls.required_parameters)
+    #Exactly one filter parameter is allowed!
+    allowed_filter_params_num = 1
 
     for key, value in params.items():
-        if key in api_module_instance.required_parameters:
+        if key in cls.required_parameters:
             parameter_values_type_validator(
-                                    api_module_instance.required_parameters.get(
+                                    cls.required_parameters.get(
                                         key
                                     ).get('required_type'),
                                     params_dict = {key : value}
                                     )
             parameter_values_subset_validator(
                                     key,
-                                    values,
-                                    api_module_instance.required_parameters.get(
+                                    value,
+                                    cls.required_parameters.get(
                                         key
                                     ).get('values', list())
             )
             required_params_num -= 1
-
-        """
-        Need to work from here!
-        """
-        elif key in cls.legitimate_parameters \\
-            and set(value) in cls.d
-
+        elif key in cls.filter_parameters:
+            if allowed_filter_params_num < 1:
+                raise ValueError(f"Only one filter parameter is allowed.")
+            parameter_values_type_validator(
+                                      cls.filter_parameters.get(
+                                            key
+                                      ).get('required_type'),
+                                      params_dict = {key : value}
+            )
+            parameter_values_subset_validator(
+                                      key,
+                                      value,
+                                      cls.filter_parameters.get(
+                                            key
+                                      ).get('values', list())
+            )
+            allowed_filter_params_num -= 1
+        elif key in cls.optional_parameters:
+            parameter_values_type_validator(
+                                    cls.optional_parameters.get(
+                                        key
+                                    ).get('required_type'),
+                                    params_dict = {key : value}
+                                    )
+            parameter_values_subset_validator(
+                                    key,
+                                    value,
+                                    cls.optional_parameters.get(
+                                        key
+                                    ).get('values', list())
+            )
+        else:
+            raise ValueError(f"{key} in your parameter is not allowed.")
 
 def parameter_values_type_validator(expected_type, params_dict):
     for key, values in params_dict.items():

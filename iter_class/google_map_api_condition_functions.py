@@ -1,3 +1,6 @@
+# iter_class.google_map_api_condition_functions.py
+
+# global imports
 import json
 
 def google_map_api_result_list_empty_checker(iterator_instance):
