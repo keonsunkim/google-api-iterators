@@ -13,7 +13,7 @@ def google_map_api_result_list_empty_checker(iterator_instance):
         raise StopIteration
 
 
-def next_page_token_checker(iterator_instance):
+def google_map_api_next_page_token_checker(iterator_instance):
     """
     Stop iteration if there is no next_page_token!
     Let it flow when index is set at 0, since there is no data

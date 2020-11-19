@@ -9,7 +9,10 @@ import requests
 import googleapiclient.discovery
 
 # local imports
+from mixins import CSVSaveMixin
+
 from .validator_functions import validate_youtube_api_parameters
+from .parser import youtube_comment_data_parser
 from tools import dict_list_to_string
 
 class YoutubeAPIBase:
@@ -29,6 +32,9 @@ class YoutubeAPIBase:
                             developerKey = self._apikey)
         self.api_version = version
         self.return_data = None
+        
+        super(YoutubeAPIBase, self).__init__(*args, **kwargs)
+
 
     @classmethod
     def validate_parameters(cls, params):
@@ -39,7 +45,7 @@ class YoutubeAPIBase:
         """
         validate_youtube_api_parameters(cls, params)
 
-class YoutubeAPICommentRetriever(YoutubeAPIBase):
+class YoutubeAPICommentRetriever(YoutubeAPIBase, CSVSaveMixin):
     """
     A class to make easy of youtube comment retrieval.
 
@@ -70,10 +76,14 @@ class YoutubeAPICommentRetriever(YoutubeAPIBase):
         'pageToken' : {'required_type' : str},
         'textFormat' : {'required_type' : str, 'values' : ['html', 'plainText']}
     }
+    
+    _parser_function = youtube_comment_data_parser
 
 
     def __init__(self, APIKey, *args, **kwargs):
-        super().__init__(APIKey, *args, **kwargs)
+        
+        print(kwargs)
+        super(YoutubeAPICommentRetriever, self).__init__(APIKey, *args, **kwargs)
 
 
     def search_with_params(self, params, *args, **kwargs):
@@ -88,5 +98,9 @@ class YoutubeAPICommentRetriever(YoutubeAPIBase):
         request = self.searchobject.commentThreads().list(
             **dict_list_to_string(params)
         )
-        response = request.execute()
-        print(response)
+        self.return_data = request.execute()
+        self.save()
+        return self.return_data
+    
+    def check(self):
+        print(self.header)
