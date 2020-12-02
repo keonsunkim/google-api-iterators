@@ -1,0 +1,9 @@
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+*.pyc
+__pycache__/
+
+*.wav
+*.flac
+*.mp4
