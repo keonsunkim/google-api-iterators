@@ -1,4 +1,4 @@
-# google-api-iterators
+# python-easy-data-gatherer
 Easy data retreiver from multiple sources for gathering data.
 Currently this package allows gathering following data.
 * Google Map API
