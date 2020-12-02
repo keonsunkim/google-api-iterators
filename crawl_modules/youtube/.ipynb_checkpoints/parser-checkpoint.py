@@ -1,4 +1,4 @@
-# youtube_api/parser.py
+# youtube.parser.py
 
 from tools import nested_dict_to_dict, cherrypick_dict
 
@@ -30,3 +30,18 @@ def youtube_comment_data_parser(instance, add_data = dict()):
                 )
                 
     return return_list
+
+def youtube_transcript_data_parser(instance):
+    """
+    Parses youtube transcript file 
+    """
+    return_list = list()
+    for ln_code, transcript in instance.return_data.get('transcript').items():
+        transcript_data = {
+            'video_id' : instance.yt.video_id,
+            'ln_code' : ln_code,
+            'transcript' : transcript
+        }
+        return_list.append(cherrypick_dict(transcript_data, instance.header))
+    return return_list
+        

@@ -1,3 +1,5 @@
+# youtube.api_modules.py
+
 # os import
 import os
 
@@ -81,8 +83,6 @@ class YoutubeAPICommentRetriever(YoutubeAPIBase, CSVSaveMixin):
 
 
     def __init__(self, APIKey, *args, **kwargs):
-        
-        print(kwargs)
         super(YoutubeAPICommentRetriever, self).__init__(APIKey, *args, **kwargs)
 
 

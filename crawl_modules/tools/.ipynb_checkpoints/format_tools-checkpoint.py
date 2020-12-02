@@ -1,4 +1,9 @@
 # tools.format_tools.py
+import re
+
+
+# Global regular expression compilation
+xml_catch_re = re.compile('<.*?>')
 
 def dict_list_to_string(arg_dict, sep=','):
     """
@@ -41,3 +46,14 @@ def cherrypick_dict(dictionary, keys):
         if key in keys:
             return_dict[key] = value
     return return_dict
+
+def parse_xml_captions(string):
+    """
+    Takes all strings inside '<>'
+    This allows separating only subtitles from
+    xml based captions
+    """
+    global xml_catch_re
+    return xml_catch_re.sub(r'', str(string))
+    
+    

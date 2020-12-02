@@ -6,3 +6,7 @@ Need to finish validator function and search_with_params class method.
 Finished CSV saving mixins.
 Finished youtube iterator. 
 Need to work on Simplifying code and adding other functionalities.
+
+2020.12.02
+Finished Transcript saving + downloading video files
+Need to work on third party speech recognition to generate transcripts

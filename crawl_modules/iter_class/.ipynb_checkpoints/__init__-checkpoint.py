@@ -1,4 +1,4 @@
-# youtube_api.__init__.py
+# iter_class.__init__.py 
 
 import os, sys
 
